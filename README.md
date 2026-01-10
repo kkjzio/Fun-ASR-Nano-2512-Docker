@@ -18,6 +18,14 @@
 
 ## 部署步骤
 
+### 0.直接拉取镜像
+
+使用`Dockerhub`上构建好的镜像
+
+```bash
+docker run -d --name=fun-asr-nano --restart=unless-stopped -p 10096:10096 -e PYTHONUNBUFFERED=1 --gpus=all wangshengjj/fun-asr-nano-2512:latest
+```
+
 在构建本项目前，请确认您已安装`NVIDIA Container Toolkit`
 
 ### 1.本地构建镜像

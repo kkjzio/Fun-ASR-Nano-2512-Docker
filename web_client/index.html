@@ -159,6 +159,17 @@ FunASR-Nano-2512 ASR Web Client
                     <option value="online">online (纯流式)</option>
                 </select>
             </div>
+            <div class="input-group">
+                <label>代理中继:</label>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="use_relay" onchange="toggleRelay()">
+                    通过本地 SOCKS5 代理中继连接
+                </label>
+            </div>
+            <div class="input-group" id="relay_url_group" style="display:none;">
+                <label>中继地址:</label>
+                <input type="text" id="relay_url" value="ws://localhost:10096" placeholder="ws://localhost:10096">
+            </div>
         </div>
 
         <div class="status-bar" id="status_div">状态: 未连接</div>
@@ -199,6 +210,11 @@ FunASR-Nano-2512 ASR Web Client
             wsUrlInput.value = `ws://${window.location.hostname}:10095`;
         }
 
+        function toggleRelay() {
+            const useRelay = document.getElementById('use_relay').checked;
+            document.getElementById('relay_url_group').style.display = useRelay ? 'flex' : 'none';
+        }
+
         function log(msg) {
             console.log(msg);
             // document.getElementById('log_div').innerText = msg;
@@ -226,7 +242,10 @@ FunASR-Nano-2512 ASR Web Client
         async function startRecording() {
             try {
                 // 1. Initialize WebSocket
-                const url = wsUrlInput.value;
+                const useRelay = document.getElementById('use_relay').checked;
+                const url = useRelay
+                    ? document.getElementById('relay_url').value
+                    : wsUrlInput.value;
                 // 重要: 服务端指定了 subprotocols=["binary"]，客户端必须匹配，否则握手失败
                 ws = new WebSocket(url, ["binary"]);
                 ws.binaryType = "arraybuffer";
